@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aile Danışmanlığı Vaka Okulu | AI Klinik Süpervizör</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    /* Üst Banner */
+    .hero {
+      background: linear-gradient(135deg, #090d16 0%, #1e1b4b 55%, #312e81 100%);
+      color: #ffffff;
+      padding: 32px 28px;
+      border-radius: 16px;
+      margin-bottom: 28px;
+      border-left: 6px solid #6366f1;
+      box-shadow: 0 12px 30px -10px rgba(30, 27, 75, 0.35);
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      background: rgba(99, 102, 241, 0.25);
+      color: #c7d2fe;
+      border: 1px solid rgba(165, 180, 252, 0.35);
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .hero h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: #cbd5e1;
+      font-size: 14.5px;
+      max-width: 760px;
+    }
+
+    /* Bölüm Başlıkları */
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1e293b;
+    }
+
+    /* Vaka Seçim Kartları */
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .case-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .case-card:hover {
+      border-color: #a5b4fc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -8px rgba(79, 70, 229, 0.18);
+    }
+
+    .case-card.active {
+      border-color: var(--primary);
+      background: #eef2ff;
+      box-shadow: 0 8px 24px -8px rgba(79, 70, 229, 0.28);
+    }
+
+    .case-num {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .case-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .case-profile {
+      font-size: 12.5px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.7);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* Seçili Vaka Detay Kutusu */
+    .workspace-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03);
+    }
+
+    .story-box {
+      background: #f8fafc;
+      border-left: 4px solid #6366f1;
+      padding: 16px 18px;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 18px;
+      font-size: 14.5px;
+      color: #334155;
+      white-space: pre-line;
+    }
+
+    .question-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+      padding: 16px 18px;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 22px;
+      font-size: 14px;
+      color: #78350f;
+      white-space: pre-line;
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-sample {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-sample:hover {
+      background: #e2e8f0;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: 14px 16px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 14.5px;
+      color: #0f172a;
+      resize: vertical;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-submit {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    /* Yükleniyor Durumu */
+    .loading-box {
+      display: none;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      color: #312e81;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(79, 70, 229, 0.25);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Süpervizyon Rapor Alanı */
+    #reportSection {
+      display: none;
+      background: var(--card);
+      border: 2px solid #6366f1;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 12px 32px -12px rgba(79, 70, 229, 0.2);
+    }
+
+    .report-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f1f5f9;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-print {
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-print:hover {
+      background: #1e293b;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+      color: #1e1b4b;
+      margin-top: 22px;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .markdown-body h3 {
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-left: 4px solid #4f46e5;
+      border-radius: 0 8px 8px 0;
+      font-size: 16px;
+    }
+
+    .markdown-body p {
+      margin-bottom: 12px;
+      color: #334155;
+    }
+
+    .markdown-body ul,
+    .markdown-body ol {
+      margin-left: 22px;
+      margin-bottom: 14px;
+      color: #334155;
+    }
+
+    .markdown-body li {
+      margin-bottom: 6px;
+    }
+
+    .markdown-body strong {
+      color: #0f172a;
+    }
+
+    .markdown-body hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 20px 0;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #ffffff;
+      }
+      #reportSection {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Üst Başlık -->
+    <header class="hero">
+      <div class="badge-row">
+        <span class="badge">Klinik Süpervizyon Simülatörü</span>
+        <span class="badge badge-amber">Gemini 2.5 Flash Destekli</span>
+      </div>
+      <h1>🏠 Aile Danışmanlığı Vaka Okulu</h1>
+      <p>Klinik vakaları inceleyin, danışman olarak müdahale stratejinizi ve döngüsel sorularınızı yazın; 30 yıllık duayen süpervizör yapay zekadan anında puanlı ve diyaloglu geri bildirim alın.</p>
+    </header>
+
+    <!-- Adım 1: Vaka Seçimi -->
+    <div class="no-print">
+      <div class="section-title">📌 1. Çalışmak İstediğiniz Klinik Vakayı Seçin</div>
+      <div id="caseGrid" class="case-grid"></div>
+    </div>
+
+    <!-- Adım 2: Vaka Detayı ve Yanıt Formu -->
+    <div class="workspace-card no-print">
+      <div class="section-title" id="selectedCaseTitle">📖 Vaka Öyküsü</div>
+      <div id="storyBox" class="story-box">Yükleniyor...</div>
+      <div id="questionBox" class="question-box"></div>
+
+      <div class="form-header">
+        <label for="studentAnswer" class="section-title" style="margin-bottom: 0;">✍️ 2. Öğrenci / Danışman Müdahale Yanıtınız</label>
+        <button type="button" id="sampleBtn" class="btn-sample">💡 Örnek Öğrenci Yanıtı Doldur (Test İçin)</button>
+      </div>
+
+      <textarea id="studentAnswer" placeholder="Bu vakada nasıl bir nötralite sergilersiniz? Çifte hangi döngüsel soruları yöneltir ve nasıl bir sistemik müdahale planlarsınız? Cevabınızı buraya yazın..."></textarea>
+
+      <div class="action-bar">
+        <span style="font-size: 12.5px; color: var(--muted);">Değerlendirme yaklaşık 8-15 saniye sürer.</span>
+        <button type="button" id="submitBtn" class="btn-submit">
+          <span>🎓 Süpervizöre Gönder ve Değerlendir</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Yükleniyor Kutusu -->
+    <div id="loadingBox" class="loading-box no-print">
+      <span class="spinner"></span>
+      <span>Klinik Süpervizör yanıtınızı inceliyor, kör noktaları ve örnek seans repliklerini hazırlıyor...</span>
+    </div>
+
+    <!-- Adım 3: Süpervizyon Raporu -->
+    <section id="reportSection">
+      <div class="report-toolbar no-print">
+        <div class="section-title" style="margin-bottom: 0;">📋 Klinik Süpervizyon & Değerlendirme Raporu</div>
+        <button type="button" onclick="window.print()" class="btn-print">🖨️ PDF Olarak Kaydet / Yazdır</button>
+      </div>
+      <div id="reportContent" class="markdown-body"></div>
+    </section>
+  </div>
+
+  <script>
+    let vakalar = [];
+    let aktifVakaId = 1;
+
+    const ornekCevaplar = {
+      1: `Hocam merhabalar, ben Açıköğretim Sosyoloji'den yeni mezun oldum. Aile Sosyolojisi dersinde gördüğümüz kadarıyla burada tipik bir 'Geleneksel Geniş Aile' ile 'Modern Çekirdek Aile' çatışması yaşanıyor.\n\n1. Nötralite Sorusuna Cevabım:\nSeansta iki tarafı da kırmamak için ortada dururum. Kerem Bey'e 'Anneye hürmet önemlidir ama artık modern bir çekirdek aile kurdunuz' derim. Aylin Hanım'a da 'Kayınvalideniz eski kuşak, niyetinde kötülük yok, büyüklere karşı biraz daha alttan alıcı ve sabırlı olmalısınız' derim.\n\n2. Döngüsel Soru ve Müdahale:\nKerem Bey'e: 'Annenizden anahtarı geri alsanız evliliğiniz kurtulur mu?' diye sorarım. Müdahale olarak da anneyi kırmamak için kapının kilidini 'bozuldu' bahanesiyle değiştirmelerini öneririm.`,
+      2: `Anne ve babaya doğrudan 'Siz kendi evlilik sorunlarınızı çözemediğiniz için kızınız Melis dikkatleri üzerine çekmeye çalışıyor, aslında hasta olan Melis değil sizin evliliğinizdir' derim. Melis'e de anne babasının kavgalarına karışmaması ve derslerine odaklanması gerektiğini öğütlerim.`,
+      3: `Selin Hanım çok haklı olduğu için önce onun duygularını onaylarım ve Can Bey'e dönüp 'Yaptığınız sadakatsizlik evlilik güvenini yıkmış, Selin Hanım'ın öfkesine katlanmak ve kendinizi affettirmek zorundasınız' derim. Sonra Can Bey'den bir daha yapmayacağına dair söz vermesini isterim.`
+    };
+
+    async function vakalariYukle() {
+      const res = await fetch('/api/vakalar');
+      vakalar = await res.json();
+      kartlariCiz();
+      vakaSec(vakalar[0].id);
+    }
+
+    function kartlariCiz() {
+      const grid = document.getElementById('caseGrid');
+      grid.innerHTML = vakalar.map(v => `
+        <div class="case-card ${v.id === aktifVakaId ? 'active' : ''}" onclick="vakaSec(${v.id})">
+          <div>
+            <div class="case-num">VAKA ${v.id}</div>
+            <h3>${v.baslik.replace(/^Vaka \d+:\s*/, '')}</h3>
+          </div>
+          <div class="case-profile">👥 ${v.profil}</div>
+        </div>
+      `).join('');
+    }
+
+    function vakaSec(id) {
+      aktifVakaId = id;
+      const vaka = vakalar.find(v => v.id === id);
+      if (!vaka) return;
+
+      kartlariCiz();
+      document.getElementById('selectedCaseTitle').textContent = '📖 ' + vaka.baslik;
+      document.getElementById('storyBox').textContent = vaka.hikaye.trim();
+      document.getElementById('questionBox').textContent = vaka.soru.trim();
+    }
+
+    document.getElementById('sampleBtn').addEventListener('click', () => {
+      document.getElementById('studentAnswer').value = ornekCevaplar[aktifVakaId] || ornekCevaplar[1];
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', async () => {
+      const ogrenciCevabi = document.getElementById('studentAnswer').value.trim();
+      if (ogrenciCevabi.length < 15) {
+        alert('Lütfen değerlendirilebilmesi için en az birkaç cümlelik yanıtınızı yazın.');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      const loadingBox = document.getElementById('loadingBox');
+      const reportSection = document.getElementById('reportSection');
+
+      submitBtn.disabled = true;
+      loadingBox.style.display = 'block';
+      reportSection.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/degerlendir', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ vakaId: aktifVakaId, ogrenciCevabi })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Sunucu hatası oluştu');
+        }
+
+        document.getElementById('reportContent').innerHTML = marked.parse(data.rapor);
+        reportSection.style.display = 'block';
+        reportSection.scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Hata: ' + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        loadingBox.style.display = 'none';
+      }
+    });
+
+    vakalariYukle();
+  </script>
+</body>
+</html>
+

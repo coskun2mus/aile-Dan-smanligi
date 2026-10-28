@@ -1,0 +1,14 @@
+{
+  "name": "aile-danismanligi-vaka-okulu",
+  "version": "1.0.0",
+  "description": "Gemini API destekli Aile Danışmanlığı Klinik Süpervizyon ve Vaka Okulu Web Uygulaması",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "cli": "node vaka_okulu.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
